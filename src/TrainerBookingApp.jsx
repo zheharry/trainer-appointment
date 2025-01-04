@@ -1,191 +1,212 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Trash2, Copy } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Trash, Copy } from 'lucide-react';
 
 const TrainerBookingApp = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [bookings, setBookings] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState('14:00');
+  const [selectedTrainer, setSelectedTrainer] = useState('Andy');
+  const [selectedStudent, setSelectedStudent] = useState('媽咪');
 
-  // 產生月曆資料
-  const generateCalendar = (date) => {
+  // 生成時間選項 (14:00-20:00)
+  const timeOptions = Array.from({ length: 7 }, (_, i) => {
+    const hour = i + 14;
+    return `${hour}:00`;
+  });
+
+  // 生成日曆數據
+  const generateCalendarDays = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const weeks = [];
-    let days = [];
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startingDay = firstDay.getDay();
+    const totalDays = lastDay.getDate();
 
-    // 填充月初空白
-    for (let i = 0; i < firstDay; i++) {
+    const days = [];
+    for (let i = 0; i < startingDay; i++) {
       days.push(null);
     }
-
-    // 填充日期
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(i);
-      if (days.length === 7) {
-        weeks.push(days);
-        days = [];
-      }
+    for (let i = 1; i <= totalDays; i++) {
+      days.push(new Date(year, month, i));
     }
-
-    // 填充月底空白
-    if (days.length > 0) {
-      while (days.length < 7) {
-        days.push(null);
-      }
-      weeks.push(days);
-    }
-
-    return weeks;
+    return days;
   };
 
-  // 生成時間選項
-  const timeOptions = [];
-  for (let i = 14; i <= 21; i++) {
-    timeOptions.push(`${i}:00`);
-  }
+  // 獲取星期幾的中文名稱
+  const getWeekdayName = (date) => {
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    return weekdays[date.getDay()];
+  };
 
-  // 切換月份
-  const changeMonth = (offset) => {
+  // 處理月份切換
+  const changeMonth = (delta) => {
     const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + offset);
+    newDate.setMonth(newDate.getMonth() + delta);
     setCurrentDate(newDate);
   };
 
   // 處理預約提交
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const booking = {
+  const handleBooking = () => {
+    if (!selectedDate) return;
+    
+    const newBooking = {
+      id: Date.now(),
       date: selectedDate,
-      time: formData.get('time'),
-      trainer: formData.get('trainer'),
-      student: formData.get('student'),
-      weekday: new Date(selectedDate).toLocaleString('zh-TW', { weekday: 'long' })
+      weekday: getWeekdayName(selectedDate),
+      time: selectedTime,
+      trainer: selectedTrainer,
+      student: selectedStudent
     };
-    setBookings([...bookings, booking]);
-    e.target.reset();
-    setSelectedDate(null);
+    
+    setBookings([...bookings, newBooking]);
   };
 
-  // 刪除預約
-  const deleteBooking = (index) => {
-    const newBookings = bookings.filter((_, i) => i !== index);
-    setBookings(newBookings);
+  // 處理刪除預約
+  const deleteBooking = (id) => {
+    setBookings(bookings.filter(booking => booking.id !== id));
   };
 
   // 複製所有預約資料
   const copyAllBookings = () => {
     const text = bookings.map(booking => 
-      `${booking.date} ${booking.weekday} ${booking.time} ${booking.trainer} ${booking.student}`
+      `${booking.date.toLocaleDateString('zh-TW')} ${booking.weekday} ${booking.time} ${booking.trainer} ${booking.student}`
     ).join('\n');
+    
     navigator.clipboard.writeText(text);
   };
 
-  const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+  // 格式化預約顯示文字
+  const formatBookingText = (booking) => {
+    return `${booking.date.toLocaleDateString('zh-TW')} ${booking.weekday} ${booking.time} ${booking.trainer} ${booking.student}`;
+  };
 
   return (
-    <div className="max-w-lg mx-auto p-4 font-sans">
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
+    <div className="max-w-md mx-auto p-4 font-sans">
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* 日曆部分 */}
         <div className="bg-white rounded-lg shadow p-4">
           <div className="flex justify-between items-center mb-4">
             <button onClick={() => changeMonth(-1)} className="p-1">
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-lg font-semibold">
+            <span className="font-bold">
               {currentDate.getFullYear()}年{currentDate.getMonth() + 1}月
             </span>
             <button onClick={() => changeMonth(1)} className="p-1">
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-          <div className="grid grid-cols-7 gap-1">
-            {weekDays.map(day => (
-              <div key={day} className="text-center font-medium py-1">{day}</div>
+          
+          <div className="grid grid-cols-7 gap-1 text-center mb-2">
+            {['日', '一', '二', '三', '四', '五', '六'].map(day => (
+              <div key={day} className="text-sm font-medium">
+                {day}
+              </div>
             ))}
-            {generateCalendar(currentDate).flat().map((day, index) => (
+          </div>
+          
+          <div className="grid grid-cols-7 gap-1">
+            {generateCalendarDays(currentDate).map((date, index) => (
               <button
                 key={index}
-                onClick={() => day && setSelectedDate(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                 className={`
-                  p-2 text-center rounded
-                  ${day ? 'hover:bg-blue-100' : 'invisible'}
-                  ${selectedDate === `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` ? 'bg-blue-500 text-white' : ''}
+                  p-2 text-center text-sm rounded
+                  ${!date ? 'invisible' : ''}
+                  ${date && selectedDate && date.toDateString() === selectedDate.toDateString()
+                    ? 'bg-blue-500 text-white'
+                    : 'hover:bg-gray-100'}
                 `}
-                disabled={!day}
+                onClick={() => date && setSelectedDate(date)}
+                disabled={!date}
               >
-                {day}
+                {date ? date.getDate() : ''}
               </button>
             ))}
           </div>
         </div>
 
         {/* 預約表單 */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-4">
           <div className="space-y-4">
             <div>
-              <label className="block mb-1">預約時間</label>
-              <select name="time" required className="w-full p-2 border rounded">
+              <label className="block text-sm font-medium mb-1">時間</label>
+              <select
+                className="w-full p-2 border rounded"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              >
                 {timeOptions.map(time => (
                   <option key={time} value={time}>{time}</option>
                 ))}
               </select>
             </div>
+            
             <div>
-              <label className="block mb-1">學員</label>
-              <select name="student" required className="w-full p-2 border rounded">
+              <label className="block text-sm font-medium mb-1">學員</label>
+              <select
+                className="w-full p-2 border rounded"
+                value={selectedStudent}
+                onChange={(e) => setSelectedStudent(e.target.value)}
+              >
                 <option value="媽咪">媽咪</option>
-                <option value="旨吟">旨吟</option>
+                <option value="姐姐">姐姐</option>
               </select>
             </div>
+            
             <div>
-              <label className="block mb-1">教練</label>
-              <select name="trainer" required className="w-full p-2 border rounded">
+              <label className="block text-sm font-medium mb-1">教練</label>
+              <select
+                className="w-full p-2 border rounded"
+                value={selectedTrainer}
+                onChange={(e) => setSelectedTrainer(e.target.value)}
+              >
                 <option value="Andy">Andy</option>
                 <option value="Adam">Adam</option>
-                <option value="Wu">Wu</option>
+                <option value="wu">wu</option>
+                <option value="🐯">🐯</option>
               </select>
             </div>
+            
             <button
-              type="submit"
+              onClick={handleBooking}
               disabled={!selectedDate}
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
+              className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
             >
               新增預約
             </button>
           </div>
-        </form>
+        </div>
       </div>
 
       {/* 預約列表 */}
       <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">預約列表</h2>
-          <button
-            onClick={copyAllBookings}
-            className="flex items-center gap-1 text-blue-500 hover:text-blue-600"
-          >
-            <Copy className="w-4 h-4" />
-            複製全部
-          </button>
-        </div>
         <div className="space-y-2">
-          {bookings.map((booking, index) => (
-            <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-              <div className="flex-1">
-                {booking.date} {booking.weekday} {booking.time} {booking.trainer} {booking.student}
+          {bookings.map(booking => (
+            <div key={booking.id} className="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
+              <div className="text-sm font-mono">
+                {formatBookingText(booking)}
               </div>
               <button
-                onClick={() => deleteBooking(index)}
-                className="text-red-500 hover:text-red-600 p-1"
+                onClick={() => deleteBooking(booking.id)}
+                className="text-red-500 hover:text-red-600"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash className="w-4 h-4" />
               </button>
             </div>
           ))}
         </div>
+        
+        {bookings.length > 0 && (
+          <button
+            onClick={copyAllBookings}
+            className="mt-4 w-full flex items-center justify-center gap-2 bg-gray-100 p-2 rounded hover:bg-gray-200"
+          >
+            <Copy className="w-4 h-4" />
+            <span>複製所有預約</span>
+          </button>
+        )}
       </div>
     </div>
   );
