@@ -164,7 +164,7 @@ const TrainerBookingApp = () => {
               >
                 <option value="Andy">Andy</option>
                 <option value="Adam">Adam</option>
-                <option value="wu">wu</option>
+                <option value="g">g</option>
                 <option value="🐯">🐯</option>
               </select>
             </div>
