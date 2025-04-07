@@ -1,4 +1,5 @@
-/* filepath: /Users/harry/Documents/programming/trainer-appointment/script.js */
+import { trainers, students, times } from './data.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const monthYearElement = document.getElementById('month-year');
     const datesElement = document.getElementById('calendar-dates');
@@ -170,6 +171,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // if (storedBookings) {
     //     bookings = JSON.parse(storedBookings);
     // }
+
+    function generateOptions(container, options, type) {
+        container.innerHTML = '';
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'option-button';
+            button.dataset.type = type;
+            button.dataset.value = option;
+            button.textContent = option;
+            container.appendChild(button);
+        });
+    }
+
+    generateOptions(trainerOptions, trainers, 'trainer');
+    generateOptions(studentOptions, students, 'student');
+    generateOptions(timeOptions, times, 'time');
 
     renderCalendar();
     renderBookings(); // Render any initially loaded bookings

@@ -191,30 +191,60 @@ h1, h2, h3 {
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
     }
     .calendar-container, .selection-container {
+        padding: 10px;
         min-width: unset; /* Remove min-width on smaller screens */
     }
-}
-
-/* Add finer adjustments for very small screens */
-@media (max-width: 480px) {
-    body {
-        padding: 10px; /* Reduce body padding */
+    h1, h2, h3 {
+        font-size: 1.2em;
     }
-    .calendar-container, .selection-container, .booking-list-container {
-        padding: 15px; /* Reduce container padding */
+    .calendar-header button {
+        font-size: 1.2em;
+    }
+    .calendar-header h3 {
+        font-size: 1em;
+    }
+    .calendar-days div {
+        padding: 3px 0;
+        font-size: 0.9em;
     }
     .calendar-dates div {
-        padding: 8px 4px; /* Slightly smaller date cells */
+        padding: 6px 3px;
+        font-size: 0.9em;
+    }
+    .selector {
+        margin-bottom: 10px;
+    }
+    .selector h3 {
+        margin-bottom: 5px;
+        font-size: 1em;
+    }
+    .selector div {
+        gap: 5px;
     }
     .option-button {
-        padding: 8px 12px; /* Slightly smaller buttons */
+        padding: 6px 10px;
+        font-size: 0.9em;
     }
-    h1 {
-        font-size: 1.5em; /* Slightly smaller main heading */
+    #submit-booking {
+        padding: 10px;
+        font-size: 1em;
+        margin-top: 10px;
     }
-    h2 {
-        font-size: 1.2em; /* Slightly smaller section headings */
+    .booking-list-container {
+        padding: 10px;
+    }
+    #booking-list li {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+    #booking-list .delete-booking {
+        width: 20px;
+        height: 20px;
+        font-size: 0.8em;
+        line-height: 20px;
     }
 }
