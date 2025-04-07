@@ -1,13 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trainer Appointment Booking</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Trainer Appointment Booking</h1>
+  <form id="booking-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required />
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" required />
+
+    <label for="time">Time:</label>
+    <input type="time" id="time" required />
+
+    <button type="submit">Book Appointment</button>
+  </form>
+
+  <h2>Appointments</h2>
+  <ul id="appointments-list"></ul>
+
+  <script src="main.js"></script>
+</body>
 </html>
