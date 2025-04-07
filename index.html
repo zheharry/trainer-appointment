@@ -1,29 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trainer Appointment Booking</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教練預約系統</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Trainer Appointment Booking</h1>
-  <form id="booking-form">
-    <label for="name">Name:</label>
-    <input type="text" id="name" required />
+    <h1>教練預約</h1>
 
-    <label for="date">Date:</label>
-    <input type="date" id="date" required />
+    <div class="container">
+        <div class="calendar-container">
+            <h2>選擇日期</h2>
+            <div class="calendar-header">
+                <button id="prev-month">&lt;</button>
+                <h3 id="month-year"></h3>
+                <button id="next-month">&gt;</button>
+            </div>
+            <div class="calendar-days">
+                <div>日</div>
+                <div>一</div>
+                <div>二</div>
+                <div>三</div>
+                <div>四</div>
+                <div>五</div>
+                <div>六</div>
+            </div>
+            <div id="calendar-dates" class="calendar-dates"></div>
+            <input type="hidden" id="selected-date">
+        </div>
 
-    <label for="time">Time:</label>
-    <input type="time" id="time" required />
+        <div class="selection-container">
+            <h2>選擇項目</h2>
+            <div class="selector">
+                <h3>教練</h3>
+                <div id="trainer-options">
+                    <button class="option-button" data-type="trainer" data-value="Allen">Allen</button>
+                    <button class="option-button" data-type="trainer" data-value="Jack">Jack</button>
+                </div>
+            </div>
 
-    <button type="submit">Book Appointment</button>
-  </form>
+            <div class="selector">
+                <h3>學員</h3>
+                <div id="student-options">
+                    <button class="option-button" data-type="student" data-value="Sister">Sister</button>
+                    <button class="option-button" data-type="student" data-value="Mom">Mom</button>
+                </div>
+            </div>
 
-  <h2>Appointments</h2>
-  <ul id="appointments-list"></ul>
+            <div class="selector">
+                <h3>時間</h3>
+                <div id="time-options">
+                    <button class="option-button" data-type="time" data-value="6pm">6 PM</button>
+                    <button class="option-button" data-type="time" data-value="7pm">7 PM</button>
+                    <button class="option-button" data-type="time" data-value="8pm">8 PM</button>
+                    <button class="option-button" data-type="time" data-value="9pm">9 PM</button>
+                </div>
+            </div>
 
-  <script src="main.js"></script>
+            <button id="submit-booking">送出預約</button>
+        </div>
+    </div>
+
+    <div class="booking-list-container">
+        <h2>已預約列表</h2>
+        <ul id="booking-list">
+            <!-- Booking items will be added here by JavaScript -->
+        </ul>
+    </div>
+
+    <script src="script.js"></script>
 </body>
-</html>
+</html>ß
